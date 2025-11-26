@@ -345,20 +345,102 @@ curl -X GET "http://localhost:8080/strategy/execution-progress/top-movers?startD
 ---
 
 ### 7. Strategy Performance vs. Target (%)
-**Purpose:** Compare strategy performance against planned targets.
+**Purpose:** Compare strategy performance against planned targets for a specific period.
 
-*   **Original API:** `GET /strategy/progress-vs-planned-avg`
-*   **Drill-Down API:** **IN PROGRESS**
-*   **Status:** Drill-down functionality is currently under development.
+- **Original API:** `GET /strategy/progress-vs-planned-avg`
+- **Drill-Down API:** `GET /strategy/progress-vs-planned-avg/details`
+- **Response Type:** `StrategyDrillDownDto.ProgressVsPlannedDetail`
+
+**Parameters:**
+| Parameter | Type | Required | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `strategyIds` | `List<Long>` | No | - | Filter by specific strategy IDs |
+| `start` | `LocalDate` | No | Min Date | Start of the period (ISO 8601: YYYY-MM-DD) |
+| `end` | `LocalDate` | No | Max Date | End of the period (ISO 8601: YYYY-MM-DD) |
+| `page` | `int` | No | 0 | Page number (0-indexed) |
+| `size` | `int` | No | 10 | Number of items per page |
+
+**Example Request:**
+```bash
+curl -X GET "http://localhost:8080/strategy/progress-vs-planned-avg/details?start=2024-01-01&end=2024-03-31&page=0&size=10"
+```
+
+**Response Structure:**
+```json
+{
+  "items": [
+    {
+      "id": 110,
+      "nameTranslations": { "en": "Strategy Y", "ar": "الاستراتيجية ص" },
+      "descriptionTranslations": { "en": "Desc...", "ar": "وصف..." },
+      "status": { "en": "Active", "ar": "نشط" },
+      "startDate": "2024-01-01",
+      "endDate": "2025-12-31",
+      "actualAvg": 45.0,
+      "plannedAvg": 50.0,
+      "variance": -5.0,
+      "currentActual": 48.0,
+      "currentPlanned": 52.0,
+      "lastUpdatedDate": "2024-03-28"
+    }
+  ],
+  "totalElements": 1,
+  "totalPages": 1
+}
+```
+
+**Use Cases:**
+- Analyze average performance over a specific time range.
+- Compare average performance against the latest current status.
+- Identify strategies that are consistently underperforming during the period.
 
 ---
 
 ### 8. Budget Forecast vs Actual Burn
-**Purpose:** Compare budget forecast against actual burn over time.
+**Purpose:** Compare budget forecast against actual burn for a specific month.
 
-*   **Original API:** `GET /strategy/budget-forecast-vs-actual-burn`
-*   **Drill-Down API:** **IN PROGRESS**
-*   **Status:** Drill-down functionality is currently under development.
+- **Original API:** `GET /strategy/budget-forecast-vs-actual-burn`
+- **Drill-Down API:** `GET /strategy/budget-forecast-vs-actual-burn/details`
+- **Response Type:** `StrategyDrillDownDto.BudgetBurnDetail`
+
+**Parameters:**
+| Parameter | Type | Required | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `strategyIds` | `List<Long>` | No | - | Filter by specific strategy IDs |
+| `month` | `LocalDate` | No | Current Month | The month to analyze (ISO 8601: YYYY-MM-DD, e.g., 2024-03-01) |
+| `page` | `int` | No | 0 | Page number (0-indexed) |
+| `size` | `int` | No | 10 | Number of items per page |
+
+**Example Request:**
+```bash
+curl -X GET "http://localhost:8080/strategy/budget-forecast-vs-actual-burn/details?month=2024-03-01&page=0&size=10"
+```
+
+**Response Structure:**
+```json
+{
+  "items": [
+    {
+      "id": 111,
+      "nameTranslations": { "en": "Strategy Z", "ar": "الاستراتيجية ع" },
+      "descriptionTranslations": { "en": "Desc...", "ar": "وصف..." },
+      "status": { "en": "Active", "ar": "نشط" },
+      "startDate": "2024-01-01",
+      "endDate": "2025-12-31",
+      "forecastCumulative": 250000.0,
+      "actualCumulative": 240000.0,
+      "burnRate": 96.0
+    }
+  ],
+  "totalElements": 1,
+  "totalPages": 1
+}
+```
+
+**Use Cases:**
+- Drill down into a specific month from the Burn Chart.
+- See the cumulative financial status of strategies up to that month.
+- Identify strategies with high or low burn rates.
 
 ---
 
